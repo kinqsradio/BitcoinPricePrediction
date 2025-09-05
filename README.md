@@ -73,56 +73,54 @@ class CycleData:
 
 ## Price Model: Halving-day Multiple (Diminishing ROI)
 
-We define the **peak multiple** for cycle \(i\) as:
-\[
-M_i \;=\; \frac{P_i}{H_i}
-\]
+We define the peak multiple for cycle \(i\) as: $M_i = \frac{P_i}{H_i}$
 
-Empirically, \(M_i\) decreases across cycles. We fit an **exponential decay**:
-\[
-\ln M_i \;=\; a + b\,(i-1)
-\quad\Longrightarrow\quad
-M_i \;=\; \alpha\,\rho^{\,i-1},\;\; \alpha=e^{a},\;\rho=e^{b}.
-\]
+Empirically, \(M_i\) decreases across cycles. We fit an exponential decay: $\ln M_i = a + b(i-1) \quad\Longrightarrow\quad M_i = \alpha\rho^{i-1},\;\; \alpha=e^{a},\;\rho=e^{b}.$
 
-**Key Insight**: When \(0 < \rho < 1\), this represents **diminishing returns on investment** - each cycle produces smaller percentage gains than the previous one.
+Key Insight: When $0 < \rho < 1$, this represents diminishing returns on investment - each cycle produces smaller percentage gains than the previous one.
 
-### Fitting (OLS in log-space)
-We collect \((x_i, y_i)\) with \(x_i=i-1\) and \(y_i=\ln M_i\), then perform **ordinary least squares** (OLS) to estimate \(a,b\).
+Fitting (OLS in log-space)
+We collect $(x_i, y_i)$ with $x_i=i-1$ and $y_i=\ln M_i$, then perform ordinary least squares (OLS) to estimate $a,b$.
 
-### Forecast
-For a future cycle \(j\) with known halving-day price \(H_j\):
-\[
-\boxed{\,P_{\text{raw}}(j) \;=\; H_j \cdot \alpha \cdot \rho^{\,j-1}\,}
-\]
+Forecast
+For a future cycle $j$ with known halving-day price $H_j$:
+$\boxed{P_{\text{raw}}(j) = H_j \cdot \alpha \cdot \rho^{j-1}}$
 
-### Bias Calibration via Rolling Backtests
-We use **out-of-sample errors** from rolling backtests to calibrate for systematic bias:
-\[
-\boxed{\,P_{\text{cal}} \;=\; P_{\text{raw}} \cdot e^{\mu}\,}
-\]
-where \(\mu\) is the mean log-error from historical predictions.
+Bias Calibration via Rolling Backtests
+We use out-of-sample errors from rolling backtests to calibrate for systematic bias:
+$\boxed{P_{\text{cal}} = P_{\text{raw}} \cdot e^{\mu}}$
+where $\mu$ is the mean log-error from historical predictions.
 
 ---
 
 ## Date Model: Halving→Peak Lag (Saturating)
 
-Let \(L_i\) be the number of days from halving to peak in cycle \(i\). We model a **saturating** lag:
-\[
-\boxed{\,L_i \;=\; L_{\infty} - c\;\rho_{\text{lag}}^{\,i-1}},\quad 0<\rho_{\text{lag}}<1.
-\]
+Let $L_i$ be the number of days from halving to peak in cycle $i$. We model a saturating lag:
+$\boxed{L_i = L_{\infty} - c\rho_{\text{lag}}^{i-1},\quad 0<\rho_{\text{lag}}<1.}$
 
-### Forecast & Uncertainty
-Given cycle \(j\) halving date \(T_j\):
-\[
-\boxed{\,\widehat{D}_j = T_j + \widehat{L}_j \text{ days}\,}
-\]
+Forecast & Uncertainty
+Given cycle $j$ halving date $T_j$:
+$\boxed{\widehat{D}_j = T_j + \widehat{L}_j \text{ days}}$
 
 ---
 
 ## Usage
 
 ### Installation
+
+**Option 1: Automated Setup (Recommended)**
+
+```bash
+# Clone the repository
+git clone https://github.com/kinqsradio/BitcoinPricePrediction.git
+cd BitcoinPricePrediction
+
+# Run the automated setup script
+chmod +x setup.sh
+./setup.sh
+```
+
+**Option 2: Manual Setup**
 
 ```bash
 # Clone the repository
@@ -135,9 +133,6 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
-
-# For visualization features (optional)
-pip install matplotlib numpy yfinance
 ```
 
 **Dependencies:**
@@ -146,6 +141,8 @@ pip install matplotlib numpy yfinance
 - numpy (for numerical operations)
 - yfinance (for real-time Bitcoin data)
 - pandas (data manipulation)
+
+All dependencies are included in `requirements.txt` and will be installed automatically.
 
 ### Quick Start
 
@@ -246,17 +243,17 @@ Treat forecasts and bands as **decision aids**, not guarantees.
 
 | Symbol | Meaning |
 |---|---|
-| \(i,j\) | cycle index (1,2,3,...) |
-| \(H_i\) | halving-day price (USD) |
-| \(P_i\) | peak price (USD) |
-| \(M_i=P_i/H_i\) | peak multiple |
-| \(\alpha=e^a\) | level parameter in multiple decay |
-| \(\rho=e^b\) | per-cycle decay factor (0<\(\rho\)<1) |
-| \(\sigma_{\ln}\) | log-residual std for price model |
-| \(P_{\text{raw}}\) | raw peak-price forecast |
-| \(P_{\text{cal}} = P_{\text{raw}} e^{\mu}\) | calibrated price (μ = mean log-error) |
-| \(L_{\infty}\) | asymptotic lag |
-| \(\widehat{D}_j\) | forecast peak date |
+| $i,j$ | cycle index (1,2,3,...) |
+| $H_i$ | halving-day price (USD) |
+| $P_i$ | peak price (USD) |
+| $M_i=P_i/H_i$ | peak multiple |
+| $\alpha=e^a$ | level parameter in multiple decay |
+| $\rho=e^b$ | per-cycle decay factor (0<$\rho$<1) |
+| $\sigma_{\ln}$ | log-residual std for price model |
+| $P_{\text{raw}}$ | raw peak-price forecast |
+| $P_{\text{cal}} = P_{\text{raw}} e^{\mu}$ | calibrated price ($\mu$ = mean log-error) |
+| $L_{\infty}$ | asymptotic lag |
+| $\widehat{D}_j$ | forecast peak date |
 
 ---
 
