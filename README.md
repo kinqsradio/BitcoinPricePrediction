@@ -24,11 +24,12 @@ This repository provides a **sophisticated Bitcoin cycle forecasting system** th
 - **Command-line interface** for easy usage
 - **Modular architecture** for easy extension
 
-**Current Model Status:**
+**Current Model Status (as of September 2025):**
 - **Price Model**: Diminishing ROI with ρ = 0.289 (29% decay per cycle)
 - **Timing Model**: Saturating lag approaching L∞ = 552 days
 - **Calibration**: Rolling backtests show 27.4% average price error
 - **Data**: 4,000+ days of Bitcoin price history
+- **Current Forecast**: Peak ~$120K (calibrated), expected March 2026
 
 The system models two separate—but related—aspects of Bitcoin halving cycles using **natural logs** for multiplicative behavior and provides **readable uncertainty estimates**.
 
@@ -125,7 +126,7 @@ Given cycle \(j\) halving date \(T_j\):
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/kinqsradio/BitcoinPricePrediction.git
 cd BitcoinPricePrediction
 
 # Create virtual environment (recommended)
